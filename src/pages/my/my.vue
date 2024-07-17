@@ -5,17 +5,16 @@ import { httpRequest } from '@/utils/http'
 const memberStore = useMemberStore()
 
 interface Item {
-  id: string;
-  imgUrl: string;
+  id: string
+  imgUrl: string
 }
 const onTestRequest = async () => {
   const res = await httpRequest<Item[]>({
     method: 'GET',
     url: '/home/banner',
   })
-  console.log('最后请求回来的数据：', res)
+  console.log('最后请求回来的数据 修改代码：', res)
 }
-
 </script>
 
 <template>
@@ -25,7 +24,7 @@ const onTestRequest = async () => {
       @tap="
         memberStore.setProfile({
           nickname: '黑马先锋',
-          token: '1234'
+          token: '1234',
         })
       "
       size="mini"
