@@ -39,18 +39,23 @@ onLoad(() => {
 
 const xtxGuessLike = ref<XtxGuessInstance>()
 
-const onScrollLower = () => {
-  xtxGuessLike.value?.getMore()
+let isLoading = false
+const onScrollLower = async () => {
+  // 避免在数据未加载回来时，出现多次加载
+  if (isLoading) return
+  isLoading = true
+  await xtxGuessLike.value?.getMore()
+  isLoading = false
 }
 
 // 下拉刷新
 const isRefreshTriggered = ref(false)
 const onRefreshrefresh = async () => {
-  console.log('********8');
-
+  // 重置数据
+  xtxGuessLike.value?.resetData()
   isRefreshTriggered.value = true
 
-  Promise.all([getHomeBanner(), getHomeCategory(), getHomeHot()])
+  Promise.all([getHomeBanner(), getHomeCategory(), getHomeHot(), xtxGuessLike.value?.getMore()])
     .catch(() => {
       uni.showToast({
         icon: 'none',
