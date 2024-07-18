@@ -16,7 +16,7 @@ const finish = ref(false)
 // 获取猜你喜欢数据
 const getHomeGoodsGuessLikeData = async () => {
   // 退出分页判断
-  if (finish.value === true) {
+  if (finish.value) {
     return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
   const res = await getHomeGoodsGuessLikeAPI(pageParams)

@@ -42,12 +42,38 @@ const xtxGuessLike = ref<XtxGuessInstance>()
 const onScrollLower = () => {
   xtxGuessLike.value?.getMore()
 }
+
+// 下拉刷新
+const isRefreshTriggered = ref(false)
+const onRefreshrefresh = async () => {
+  console.log('********8');
+
+  isRefreshTriggered.value = true
+
+  Promise.all([getHomeBanner(), getHomeCategory(), getHomeHot()])
+    .catch(() => {
+      uni.showToast({
+        icon: 'none',
+        title: '加载出错',
+      })
+    })
+    .finally(() => {
+      isRefreshTriggered.value = false
+    })
+}
 </script>
 
 <template>
   <!-- 自定义导航栏 -->
   <CustomNavBar />
-  <scroll-view scroll-y style="flex: 1" @scrolltolower="onScrollLower">
+  <scroll-view
+    refresher-enabled
+    scroll-y
+    style="flex: 1"
+    :refresher-triggered="isRefreshTriggered"
+    @scrolltolower="onScrollLower"
+    @refresherrefresh="onRefreshrefresh"
+  >
     <!-- 轮播图 -->
     <XtxSwiper :list="bannerList"></XtxSwiper>
     <!-- 分类面板 -->
