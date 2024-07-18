@@ -3,27 +3,27 @@ import CustomNavBar from '@/pages/index/components/CustomNavBar.vue'
 
 import { getHomeBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/services/home'
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
+import type { XtxGuessInstance } from '@/components/components'
 import { onLaunch, onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 import HotPanel from './components/HotPanel.vue'
 
 const bannerList = ref<BannerItem[]>([])
-const categoryList = ref<CategoryItem[]>([])
-const hotList = ref<HotItem[]>([])
 const getHomeBanner = async () => {
   const res = await getHomeBannerAPI()
-
   bannerList.value = res.result
   console.log('home组件的banner：', res)
 }
 
+const categoryList = ref<CategoryItem[]>([])
 const getHomeCategory = async () => {
   const res = await getHomeCategoryAPI()
 
   categoryList.value = res.result
 }
 
+const hotList = ref<HotItem[]>([])
 // 获取热门推荐数据
 const getHomeHot = async () => {
   const res = await getHomeHotAPI()
@@ -36,19 +36,25 @@ onLoad(() => {
   getHomeCategory()
   getHomeHot()
 })
+
+const xtxGuessLike = ref<XtxGuessInstance>()
+
+const onScrollLower = () => {
+  xtxGuessLike.value?.getMore()
+}
 </script>
 
 <template>
   <!-- 自定义导航栏 -->
   <CustomNavBar />
-  <scroll-view scroll-y style="flex: 1">
+  <scroll-view scroll-y style="flex: 1" @scrolltolower="onScrollLower">
     <!-- 轮播图 -->
     <XtxSwiper :list="bannerList"></XtxSwiper>
     <!-- 分类面板 -->
     <CategoryPanel :list="categoryList" />
     <HotPanel :list="hotList"></HotPanel>
     <!-- 猜你喜欢 -->
-    <XtxGuess></XtxGuess>
+    <XtxGuess ref="xtxGuessLike"></XtxGuess>
   </scroll-view>
 </template>
 

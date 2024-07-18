@@ -1,6 +1,6 @@
 export interface PageParams {
-  page: number
-  pageSize: number
+  page?: number
+  pageSize?: number
 }
 
 // 通用分页结果类型

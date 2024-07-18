@@ -20,7 +20,6 @@ const getHomeGoodsGuessLikeData = async () => {
     return uni.showToast({ icon: 'none', title: '没有更多数据~' })
   }
   const res = await getHomeGoodsGuessLikeAPI(pageParams)
-  // guessList.value = res.result.items
   // 数组追加
   guessList.value.push(...res.result.items)
   // 分页条件
