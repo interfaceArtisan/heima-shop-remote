@@ -1,4 +1,4 @@
-export interface PageParams {
+export type PageParams = {
   page?: number
   pageSize?: number
 }
