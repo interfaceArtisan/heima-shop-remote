@@ -7,6 +7,7 @@ import type { XtxGuessInstance } from '@/components/components'
 import { onLaunch, onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import CategoryPanel from './components/CategoryPanel.vue'
+import HomeSkeleton from './components/Skeleton.vue'
 import HotPanel from './components/HotPanel.vue'
 
 const bannerList = ref<BannerItem[]>([])
@@ -31,10 +32,18 @@ const getHomeHot = async () => {
   hotList.value = res.result
 }
 
+const isSkeltonShow = ref(true)
 onLoad(() => {
-  getHomeBanner()
-  getHomeCategory()
-  getHomeHot()
+  Promise.all([getHomeBanner(), getHomeCategory(), getHomeHot()])
+    .then(() => {
+      isSkeltonShow.value = false
+    })
+    .catch(() => {
+      uni.showToast({
+        icon: 'none',
+        title: '加载出错',
+      })
+    })
 })
 
 const xtxGuessLike = ref<XtxGuessInstance>()
@@ -79,13 +88,16 @@ const onRefreshrefresh = async () => {
     @scrolltolower="onScrollLower"
     @refresherrefresh="onRefreshrefresh"
   >
-    <!-- 轮播图 -->
-    <XtxSwiper :list="bannerList"></XtxSwiper>
-    <!-- 分类面板 -->
-    <CategoryPanel :list="categoryList" />
-    <HotPanel :list="hotList"></HotPanel>
-    <!-- 猜你喜欢 -->
-    <XtxGuess ref="xtxGuessLike"></XtxGuess>
+    <HomeSkeleton v-if="isSkeltonShow"></HomeSkeleton>
+    <template v-else>
+      <!-- 轮播图 -->
+      <XtxSwiper :list="bannerList"></XtxSwiper>
+      <!-- 分类面板 -->
+      <CategoryPanel :list="categoryList" />
+      <HotPanel :list="hotList"></HotPanel>
+      <!-- 猜你喜欢 -->
+      <XtxGuess ref="xtxGuessLike"></XtxGuess>
+    </template>
   </scroll-view>
 </template>
 
