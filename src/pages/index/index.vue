@@ -3,12 +3,12 @@ import CustomNavBar from '@/pages/index/components/CustomNavBar.vue'
 
 import { getHomeBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/services/home'
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
-import type { XtxGuessInstance } from '@/components/components'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import CategoryPanel from './components/CategoryPanel.vue'
 import HomeSkeleton from './components/Skeleton.vue'
 import HotPanel from './components/HotPanel.vue'
+import { useGuessLike } from '@/composables/gussLike'
 
 const bannerList = ref<BannerItem[]>([])
 const getHomeBanner = async () => {
@@ -46,16 +46,7 @@ onLoad(() => {
     })
 })
 
-const xtxGuessLike = ref<XtxGuessInstance>()
-
-let isLoading = false
-const onScrollLower = async () => {
-  // 避免在数据未加载回来时，出现多次加载
-  if (isLoading) return
-  isLoading = true
-  await xtxGuessLike.value?.getMore()
-  isLoading = false
-}
+const { xtxGuessLike, onScrollLower } = useGuessLike()
 
 // 下拉刷新
 const isRefreshTriggered = ref(false)
