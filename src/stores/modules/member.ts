@@ -2,6 +2,10 @@ import type { LoginResult } from '@/types/member'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+type UpdateProfileParams = {
+  [key: string]: string | undefined
+}
+
 // 定义 Store
 export const useMemberStore = defineStore(
   'member',
@@ -19,11 +23,18 @@ export const useMemberStore = defineStore(
       profile.value = undefined
     }
 
+    const updateProfile = (data: UpdateProfileParams) => {
+      for (const [key, value] of Object.entries(data)) {
+        if (value) [(profile!.value![key] = value)]
+      }
+    }
+
     // 记得 return
     return {
       profile,
       setProfile,
       clearProfile,
+      updateProfile,
     }
   },
   // TODO: 持久化

@@ -3,7 +3,16 @@ import { useMemberStore } from '@/stores/modules/member'
 const memberStore = useMemberStore()
 
 const onLogout = () => {
-  memberStore.clearProfile()
+  uni.showModal({
+    title: '提示',
+    content: '是否确认退出登录',
+    success(res) {
+      if (res.confirm) {
+        memberStore.clearProfile()
+        uni.navigateBack()
+      }
+    },
+  })
 }
 </script>
 
