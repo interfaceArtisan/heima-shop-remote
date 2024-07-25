@@ -1,3 +1,5 @@
+import type { extend } from "@dcloudio/uni-app";
+
 /**
  * 收货地址：请求体参数
  */
@@ -30,4 +32,13 @@ export interface AddressParams {
    * 收货人姓名
    */
   receiver: string;
+}
+
+/**
+ * 收货地址列表
+ */
+
+export interface AddressItem extends AddressParams {
+  id: string
+  fullLocation: string
 }

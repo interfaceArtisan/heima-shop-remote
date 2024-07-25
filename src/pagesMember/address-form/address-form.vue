@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { postMemberAddressAPI } from '@/services/address';
-import { ref } from 'vue';
+import { getMemberAddressByIdAPI, postMemberAddressAPI, putMemberAddressByIdAPI } from '@/services/address'
+import { onLoad } from '@dcloudio/uni-app'
+import { ref } from 'vue'
 
 const query = defineProps<{
   id?: string
@@ -8,6 +9,22 @@ const query = defineProps<{
 
 uni.setNavigationBarTitle({
   title: query.id ? '修改地址' : '新建地址',
+})
+
+
+const getMemberAddressByIdData = async () => {
+  if (query.id) {
+    const res = await getMemberAddressByIdAPI(query.id)
+
+    form.value = {
+      ...form.value,
+      ...res.result,
+    }
+  }
+}
+
+onLoad(() => {
+  getMemberAddressByIdData()
 })
 
 // 表单数据
@@ -23,7 +40,7 @@ const form = ref({
 })
 
 // 定义校验规则
-const rules: UniHelper.UniFormRules = {
+const rules: UniHelper.UniFormsRules = {
   receiver: {
     rules: [{ required: true, errorMessage: '请输入收货人姓名' }],
   },
@@ -60,11 +77,17 @@ const onCityChange = () => {
 
 }
 
-const formRef = ref<InstanceType<typeof UniForms>>()
+const formRef = ref<UniHelper.UniFormInstance>()
+
 const onSubmit = async () => {
   try {
     await formRef.value.validate()
-    await postMemberAddressAPI(form.value)
+    if (query.id) {
+      await putMemberAddressByIdAPI(query.id, form.value)
+    }
+    else {
+      await postMemberAddressAPI(form.value)
+    }
 
     uni.showToast({
       title: '保存成功',
@@ -74,6 +97,10 @@ const onSubmit = async () => {
       uni.navigateBack()
     }, 500)
   } catch (error) {
+    uni.showToast({
+      icon: 'error',
+      title: '请填写完整信息'
+    })
     console.log('error:', error)
   }
 }

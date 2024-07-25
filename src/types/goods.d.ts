@@ -1,3 +1,5 @@
+import type { AddressItem } from './address'
+
 /**
  * 商品信息
  */
@@ -92,7 +94,7 @@ export interface GoodsDetail {
   /**
    * 用户收货地址列表
    */
-  userAddresses: null
+  userAddresses: AddressItem[]
   /**
    * 主图视频比例,1为1:1/16:9，2为3:4
    */

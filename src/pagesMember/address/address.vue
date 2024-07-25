@@ -1,11 +1,40 @@
 <script lang="ts" setup>
+import { getMemberAddressListAPI, deleteMemberAddressByIdAPI } from '@/services/address'
+import type { AddressItem } from '@/types/address'
+import { onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
-const addressList = ref([])
+const addressList = ref<AddressItem[]>([])
+const getMemberAddressList = async () => {
+  const res = await getMemberAddressListAPI()
 
-const onChangeAddress = (item) => {}
+  addressList.value = res.result
+}
 
-const onDeleteAddress = (item) => {}
+onShow(() => {
+  getMemberAddressList()
+})
+
+const onChangeAddress = (id: string) => {
+  uni.navigateTo({
+    url: `/pagesMember/address-form/address-form?id=${id}`,
+  })
+}
+
+const onDeleteAddress = (id: string) => {
+  // 删除进行二次确认
+  uni.showModal({
+    content: '是否确认删除该地址',
+    success: async (res) => {
+      if (res.confirm) {
+        await deleteMemberAddressByIdAPI(id)
+
+        const index = addressList.value.findIndex((item) => item.id === id)
+        addressList.value.splice(index, 1)
+      }
+    },
+  })
+}
 </script>
 
 <template>
@@ -16,7 +45,7 @@ const onDeleteAddress = (item) => {}
         <uni-swipe-action class="address-list">
           <!-- 收货地址项 -->
           <uni-swipe-action-item class="item" v-for="item in addressList" :key="item.id">
-            <view class="item-content" @tap="onChangeAddress(item)">
+            <view class="item-content" @tap="onChangeAddress(item.id)">
               <view class="user">
                 {{ item.receiver }}
                 <text class="contact">{{ item.contact }}</text>
