@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { postMemberAddressAPI } from '@/services/address';
 import { ref } from 'vue';
 
 const query = defineProps<{
@@ -21,21 +22,6 @@ const form = ref({
   isDefault: 0, // 默认地址，1为是，0为否
 })
 
-const onRegionChange: UniHelper.RegionPickerOnChange = (ev) => {
-  // 省市区，前端展现
-  form.value.fullLocation = ev.detail.value.join(' ')
-
-  // 省市区，后端参数
-  const [provinceCode, cityCode, countyCode] = ev.detail.code!
-
-  form.value = {
-    ...form.value,
-    provinceCode,
-    cityCode,
-    countyCode,
-  }
-}
-
 // 定义校验规则
 const rules: UniHelper.UniFormRules = {
   receiver: {
@@ -55,11 +41,41 @@ const rules: UniHelper.UniFormRules = {
   },
 }
 
+const onRegionChange: UniHelper.RegionPickerOnChange = (ev) => {
+  // 省市区，前端展现
+  form.value.fullLocation = ev.detail.value.join(' ')
+
+  // 省市区，后端参数
+  const [provinceCode, cityCode, countyCode] = ev.detail.code!
+
+  form.value = {
+    ...form.value,
+    provinceCode,
+    cityCode,
+    countyCode,
+  }
+}
+
 const onCityChange = () => {
 
 }
-const onSubmit = () => {
 
+const formRef = ref<InstanceType<typeof UniForms>>()
+const onSubmit = async () => {
+  try {
+    await formRef.value.validate()
+    await postMemberAddressAPI(form.value)
+
+    uni.showToast({
+      title: '保存成功',
+      icon: 'success'
+    })
+    setTimeout(() => {
+      uni.navigateBack()
+    }, 500)
+  } catch (error) {
+    console.log('error:', error)
+  }
 }
 
 const onSwitchChange: UniHelper.SwitchOnChange = (ev) => {

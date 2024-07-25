@@ -1,4 +1,4 @@
-import { useMemberStore } from '@/stores/index.ts'
+import { useMemberStore } from '@/stores/index'
 const baseURL = 'https://pcapi-xiaotuxian-front-devtest.itheima.net'
 
 const httpInterceptor = {
