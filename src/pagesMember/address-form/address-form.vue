@@ -77,7 +77,7 @@ const onCityChange = () => {
 
 }
 
-const formRef = ref<UniHelper.UniFormInstance>()
+const formRef = ref<UniHelper.UniFormsInstance>()
 
 const onSubmit = async () => {
   try {
