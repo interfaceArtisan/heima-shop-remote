@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { getMemberAddressByIdAPI, postMemberAddressAPI, putMemberAddressByIdAPI } from '@/services/address'
+import {
+  getMemberAddressByIdAPI,
+  postMemberAddressAPI,
+  putMemberAddressByIdAPI,
+} from '@/services/address'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
@@ -10,7 +14,6 @@ const query = defineProps<{
 uni.setNavigationBarTitle({
   title: query.id ? '修改地址' : '新建地址',
 })
-
 
 const getMemberAddressByIdData = async () => {
   if (query.id) {
@@ -73,25 +76,22 @@ const onRegionChange: UniHelper.RegionPickerOnChange = (ev) => {
   }
 }
 
-const onCityChange = () => {
-
-}
+const onCityChange = () => {}
 
 const formRef = ref<UniHelper.UniFormsInstance>()
 
 const onSubmit = async () => {
   try {
-    await formRef.value.validate()
+    await formRef.value?.validate?.()
     if (query.id) {
       await putMemberAddressByIdAPI(query.id, form.value)
-    }
-    else {
+    } else {
       await postMemberAddressAPI(form.value)
     }
 
     uni.showToast({
       title: '保存成功',
-      icon: 'success'
+      icon: 'success',
     })
     setTimeout(() => {
       uni.navigateBack()
@@ -99,7 +99,7 @@ const onSubmit = async () => {
   } catch (error) {
     uni.showToast({
       icon: 'error',
-      title: '请填写完整信息'
+      title: '请填写完整信息',
     })
     console.log('error:', error)
   }
@@ -174,7 +174,6 @@ const onSwitchChange: UniHelper.SwitchOnChange = (ev) => {
   </view>
   <!-- 提交按钮 -->
   <button @tap="onSubmit" class="button">保存并使用</button>
-  {{ form }}
 </template>
 
 <style lang="scss">
@@ -255,6 +254,3 @@ page {
   background-color: #27ba9b;
 }
 </style>
-
-
-
