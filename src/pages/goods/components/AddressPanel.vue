@@ -1,35 +1,41 @@
 <script setup lang="ts">
 import { useAddressList } from '@/composables/address'
-import type { AddressItem } from '@/types/address';
-import { onLoad, onShow } from '@dcloudio/uni-app';
-import { computed, onMounted, ref } from 'vue';
+import { onShow } from '@dcloudio/uni-app'
+import { onMounted } from 'vue'
 
 const { addressList, getMemberAddressList } = useAddressList()
 
-const selectIndex = ref(0)
+const getSelectAddress = () => {
+  const selectItem = addressList.value.find((item) => item.checked)
+
+  return selectItem?.fullLocation + ' ' + selectItem?.address
+}
 const getAddressData = async () => {
   await getMemberAddressList()
-  selectIndex.value = addressList.value.findIndex((item) => item.isDefault)
+  addressList.value = addressList.value.map((a) => ({
+    ...a,
+    checked: !!a.isDefault,
+  }))
 }
 onMounted(() => {
   getAddressData()
 })
 
+// 点击新建地址再返回后，需重新拉取数据
 onShow(() => {
   getAddressData()
 })
 
 const onConfirm = () => {
-  emit('close', selectAddress.value)
+  emit('close', getSelectAddress())
 }
 
-const selectAddress = computed(() => {
-  const selectAddress = addressList.value[selectIndex.value]
-  return selectAddress.fullLocation + ' ' + selectAddress.address
-})
-const onChangeSelect = (index: number) => {
-  selectIndex.value = index
-  emit('close', selectAddress.value)
+const onChangeSelect = (selectIndex: number) => {
+  addressList.value.forEach((item, index) => {
+    item.checked = index === selectIndex
+  })
+
+  emit('close', getSelectAddress())
 }
 const emit = defineEmits<{
   (event: 'close', address?: string): void
@@ -39,7 +45,7 @@ const emit = defineEmits<{
 <template>
   <view class="address-panel">
     <!-- 关闭按钮 -->
-    <text class="close icon-close" @tap="emit('close', selectAddress)"></text>
+    <text class="close icon-close" @tap="emit('close', getSelectAddress())"></text>
     <!-- 标题 -->
     <view class="title">配送至</view>
     <!-- 内容 -->
@@ -48,7 +54,7 @@ const emit = defineEmits<{
         <view class="user">{{ item.receiver }} {{ item.contact }}</view>
         <view class="address">{{ item.fullLocation }} {{ item.address }}</view>
         <text
-          :class="['icon', item.isDefault || selectIndex === index ? 'icon-checked' : 'icon-ring']"
+          :class="['icon', item.checked ? 'icon-checked' : 'icon-ring']"
           @tap="onChangeSelect(index)"
         ></text>
       </view>

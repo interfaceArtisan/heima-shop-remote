@@ -41,4 +41,6 @@ export interface AddressParams {
 export interface AddressItem extends AddressParams {
   id: string
   fullLocation: string
+  // 是否选中
+  checked?: boolean
 }
