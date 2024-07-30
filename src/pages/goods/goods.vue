@@ -10,6 +10,7 @@ import type {
   SkuPopupInstance,
   SkuPopupLocaldata,
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
+import { postMemberCartAPI } from '@/services/cart'
 
 const query = defineProps<{
   id: string
@@ -51,7 +52,6 @@ const getGoodsData = async () => {
       stock: item.inventory,
     })),
   }
-  console.log(res)
 }
 
 onLoad(() => {
@@ -93,15 +93,31 @@ let mode = ref<SkuMode>(1)
 let selectArrText = ref('')
 let localdata = ref<SkuPopupLocaldata>()
 const isShowSku = ref(false)
+
 // 点击加入购物车或者立即购买
 const openSkuPopup = (type: SkuMode) => {
   mode.value = type
   isShowSku.value = true
 }
-const onAddCart = (ev: SkuPopupEvent) => {
+
+// 点击sku组件的加入购物车
+const onAddCart = async (ev: SkuPopupEvent) => {
   selectArrText.value = ev.sku_name_arr.join(' ').trim() || ''
+
+  await postMemberCartAPI({
+    skuId: ev._id,
+    count: ev.buy_num,
+  })
+
+  uni.showToast({
+    icon: 'none',
+    title: '加入购物车成功',
+  })
+
+  isShowSku.value = false
 }
 
+// 点击sku组件的立即购买
 const onBuyNow = (ev: SkuPopupEvent) => {
   selectArrText.value = ev.sku_name_arr.join(' ').trim() || ''
 }
