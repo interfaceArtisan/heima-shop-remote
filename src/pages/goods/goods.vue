@@ -121,6 +121,12 @@ const onAddCart = async (ev: SkuPopupEvent) => {
 const onBuyNow = (ev: SkuPopupEvent) => {
   selectArrText.value = ev.sku_name_arr.join(' ').trim() || ''
 }
+
+const selectAddress = ref('')
+const onCloseAddressPanel = (address: string) => {
+  selectAddress.value = address
+  popup.value?.close()
+}
 </script>
 
 <template>
@@ -174,7 +180,7 @@ const onBuyNow = (ev: SkuPopupEvent) => {
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
-          <text class="text ellipsis"> 请选择收获地址 </text>
+          <text class="text ellipsis"> {{ selectAddress || '请选择收获地址' }} </text>
         </view>
         <view @tap="openPopup('service')" class="item arrow">
           <text class="label">服务</text>
@@ -251,7 +257,7 @@ const onBuyNow = (ev: SkuPopupEvent) => {
   </view>
   <!-- uni-ui 弹出层 -->
   <uni-popup ref="popup" type="bottom" background-color="#fff">
-    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" />
+    <AddressPanel v-if="popupName === 'address'" @close="onCloseAddressPanel" />
     <ServicePanel v-if="popupName === 'service'" @close="popup?.close()" />
   </uni-popup>
 </template>
