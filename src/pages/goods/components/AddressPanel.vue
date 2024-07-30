@@ -34,7 +34,6 @@ const onChangeSelect = (selectIndex: number) => {
   addressList.value.forEach((item, index) => {
     item.checked = index === selectIndex
   })
-
   emit('close', getSelectAddress())
 }
 const emit = defineEmits<{
