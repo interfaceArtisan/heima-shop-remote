@@ -3,7 +3,7 @@ import { getGoodsAPI } from '@/services/goods'
 import type { GoodsDetail } from '@/types/goods'
 import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type {
   SkuPopupEvent,
@@ -11,6 +11,7 @@ import type {
   SkuPopupLocaldata,
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
 import { postMemberCartAPI } from '@/services/cart'
+import { useAddressStore } from '@/stores'
 
 const query = defineProps<{
   id: string
@@ -54,8 +55,21 @@ const getGoodsData = async () => {
   }
 }
 
+const addressStore = useAddressStore()
+const selectAddressText = ref('')
+
+const getAddressText = () => {
+  const address = addressStore.selectAddress
+
+  address && (selectAddressText.value = address?.fullLocation + ' ' + address?.address)
+}
+
+onShow(() => {
+  getAddressText()
+})
 onLoad(() => {
   getGoodsData()
+  getAddressText()
 })
 
 const currentIndex = ref(0)
@@ -119,12 +133,19 @@ const onAddCart = async (ev: SkuPopupEvent) => {
 
 // 点击sku组件的立即购买
 const onBuyNow = (ev: SkuPopupEvent) => {
+  const { _id, buy_num: count } = ev
   selectArrText.value = ev.sku_name_arr.join(' ').trim() || ''
+
+  const address = addressStore.selectAddress
+
+  uni.navigateTo({
+    url: `/pagesOrder/create/create?from=goods&addressId=${address?.id}&skuId=${_id}&count=${count}`,
+  })
 }
 
-const selectAddress = ref('')
-const onCloseAddressPanel = (address: string) => {
-  selectAddress.value = address
+const onCloseAddressPanel = () => {
+  getAddressText()
+
   popup.value?.close()
 }
 </script>
@@ -180,7 +201,7 @@ const onCloseAddressPanel = (address: string) => {
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
-          <text class="text ellipsis"> {{ selectAddress || '请选择收获地址' }} </text>
+          <text class="text ellipsis"> {{ selectAddressText || '请选择收获地址' }} </text>
         </view>
         <view @tap="openPopup('service')" class="item arrow">
           <text class="label">服务</text>

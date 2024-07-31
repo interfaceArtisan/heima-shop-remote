@@ -1,10 +1,18 @@
 <script lang="ts" setup>
-import { getPrepayOrderAPI } from '@/services/order'
+import { getMemberOrderPreNowAPI, getPrepayOrderAPI } from '@/services/order'
+import { useAddressStore } from '@/stores'
 import type { AddressItem } from '@/types/address'
 import type { PrepayOrder } from '@/types/order'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 
+const { safeAreaInsets } = uni.getSystemInfoSync()
+const query = defineProps<{
+  from?: string
+  addressId?: string
+  count: string
+  skuId: string
+}>()
 const activeIndex = ref(0)
 const activeDelivery = computed(() => deliveryList.value[activeIndex.value].text)
 // 配送时间
@@ -19,8 +27,6 @@ const onChangeDelivery: UniHelper.SelectorPickerOnChange = (ev) => {
 }
 const buyerMessage = ref('')
 
-const selecteAddress = ref<AddressItem>()
-
 // 获取预支付订单
 const orderPre = ref<PrepayOrder>()
 const getPrepayOrderData = async () => {
@@ -30,8 +36,28 @@ const getPrepayOrderData = async () => {
   console.log('res:', res)
 }
 
+// 获取立即购买的菜单
+const getBuyNowOrderData = async () => {
+  const res = await getMemberOrderPreNowAPI({
+    skuId: query.skuId,
+    addressId: query.addressId,
+    count: query.count,
+  })
+  orderPre.value = res.result
+}
+
+const selecteAddress = ref<AddressItem>()
+onShow(() => {
+  const addressStore = useAddressStore()
+  selecteAddress.value = addressStore.selectAddress
+})
 onLoad(() => {
-  getPrepayOrderData()
+  // 从商品详情页过来
+  if (query.from === 'goods') {
+    getBuyNowOrderData()
+  } else {
+    getPrepayOrderData()
+  }
 })
 </script>
 

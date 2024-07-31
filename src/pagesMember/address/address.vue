@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useAddressList } from '@/composables/address'
 import { deleteMemberAddressByIdAPI } from '@/services/address'
+import { useAddressStore } from '@/stores'
+import type { AddressItem } from '@/types/address'
 import { onShow } from '@dcloudio/uni-app'
 
 const { addressList, getMemberAddressList } = useAddressList()
@@ -8,10 +10,11 @@ onShow(() => {
   getMemberAddressList()
 })
 
-const onChangeAddress = (id: string) => {
-  uni.navigateTo({
-    url: `/pagesMember/address-form/address-form?id=${id}`,
-  })
+// 1. 从预付订单页进入
+const onChangeAddress = (item: AddressItem) => {
+  const addressStore = useAddressStore()
+  addressStore.saveAddress(item)
+  uni.navigateBack()
 }
 
 const onDeleteAddress = (id: string) => {
@@ -38,7 +41,7 @@ const onDeleteAddress = (id: string) => {
         <uni-swipe-action class="address-list">
           <!-- 收货地址项 -->
           <uni-swipe-action-item class="item" v-for="item in addressList" :key="item.id">
-            <view class="item-content" @tap="onChangeAddress(item.id)">
+            <view class="item-content" @tap="onChangeAddress(item)">
               <view class="user">
                 {{ item.receiver }}
                 <text class="contact">{{ item.contact }}</text>

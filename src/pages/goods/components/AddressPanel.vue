@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useAddressList } from '@/composables/address'
+import { useAddressStore } from '@/stores'
 import { onShow } from '@dcloudio/uni-app'
 import { onMounted } from 'vue'
 
 const { addressList, getMemberAddressList } = useAddressList()
+
+const addressStore = useAddressStore()
 
 const getSelectAddress = () => {
   const selectItem = addressList.value.find((item) => item.checked)
@@ -12,9 +15,11 @@ const getSelectAddress = () => {
 }
 const getAddressData = async () => {
   await getMemberAddressList()
+  const selectAddress = addressStore.selectAddress
+
   addressList.value = addressList.value.map((a) => ({
     ...a,
-    checked: !!a.isDefault,
+    checked: selectAddress ? a.id === selectAddress.id : !!a.isDefault,
   }))
 }
 onMounted(() => {
@@ -34,10 +39,13 @@ const onChangeSelect = (selectIndex: number) => {
   addressList.value.forEach((item, index) => {
     item.checked = index === selectIndex
   })
+
+  addressStore.saveAddress(addressList.value[selectIndex])
+
   emit('close', getSelectAddress())
 }
 const emit = defineEmits<{
-  (event: 'close', address?: string): void
+  (event: 'close', address: string): void
 }>()
 </script>
 

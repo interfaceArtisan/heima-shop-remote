@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-import { deleteMemberCartBySkuIdAPI, getMemberCartListAPI, putMemberCartBySkuIdAPI, putMemberCartSelectedAPI } from '@/services/cart'
+import {
+  deleteMemberCartBySkuIdAPI,
+  getMemberCartListAPI,
+  putMemberCartBySkuIdAPI,
+  putMemberCartSelectedAPI,
+} from '@/services/cart'
 import { useMemberStore } from '@/stores'
 import type { CartItem } from '@/types/cart'
 import { onShow } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import { useGuessLike } from '@/composables/gussLike'
+import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number'
 
 // 是否适配底部安全区域
 defineProps<{
@@ -18,6 +24,7 @@ const memberStore = useMemberStore()
 const showCartList = ref(false)
 const cartList = ref<CartItem[]>([])
 
+// 单个商品的选中与未选中
 const onChangeSelected = (item: CartItem) => {
   item.selected = !item.selected
 
@@ -28,15 +35,27 @@ const onChangeSelected = (item: CartItem) => {
 
 // 修改数量
 const onChangeCount = (ev: InputNumberBoxEvent) => {
-  putMemberCartBySkuIdAPI(ev.index, {
-    count: ev.value,
-  })
+  const currentItem = cartList.value.find((c) => c.skuId === ev.index)
+
+  // 解决vk-data-input-number-box在首次渲染时，会触发change事件，然后会多发送请求
+  if (currentItem?.hasChanged || currentItem?.count !== ev.value) {
+    putMemberCartBySkuIdAPI(ev.index, {
+      count: ev.value,
+    })
+  }
+
+  currentItem!.hasChanged = true
 }
 // 获取购物车列表
 const getCartList = async () => {
   const res = await getMemberCartListAPI()
 
   cartList.value = res.result
+
+  cartList.value = cartList.value.map((item) => ({
+    ...item,
+    hasChanged: false,
+  }))
 }
 
 // 删除商品
@@ -94,8 +113,9 @@ const gotoPayment = () => {
     })
   }
   // 跳转到结算页
-  uni.navigateTo({ url: '/pagesOrder/create/create' })
+  uni.navigateTo({ url: '/pagesOrder/create/create?from=cart' })
 }
+
 onShow(async () => {
   if (memberStore.profile) {
     getCartList()
@@ -141,6 +161,7 @@ onShow(async () => {
               <view class="count">
                 <vk-data-input-number-box
                   v-model="item.count"
+                  :value="item.count"
                   :min="1"
                   :max="item.stock"
                   :index="item.skuId"
