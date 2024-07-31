@@ -37,7 +37,6 @@ export const httpRequest = <T>(options: UniApp.RequestOptions) => {
       // success的含义是请求已经到达服务器，服务器有响应的情况
       success(res) {
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          console.log('原始返回的值：', res)
 
           resolve(res.data as Data<T>)
         }
@@ -57,7 +56,6 @@ export const httpRequest = <T>(options: UniApp.RequestOptions) => {
           })
           reject(res)
         }
-        console.log('返回的res的值：', res)
       },
       // 响应失败
       fail(err) {

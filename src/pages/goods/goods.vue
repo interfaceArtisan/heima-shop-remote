@@ -10,6 +10,7 @@ import type {
   SkuPopupInstance,
   SkuPopupLocaldata,
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
+import { postMemberCartAPI } from '@/services/cart'
 
 const query = defineProps<{
   id: string
@@ -92,17 +93,39 @@ let mode = ref<SkuMode>(1)
 let selectArrText = ref('')
 let localdata = ref<SkuPopupLocaldata>()
 const isShowSku = ref(false)
+
 // 点击加入购物车或者立即购买
 const openSkuPopup = (type: SkuMode) => {
   mode.value = type
   isShowSku.value = true
 }
-const onAddCart = (ev: SkuPopupEvent) => {
+
+// 点击sku组件的加入购物车
+const onAddCart = async (ev: SkuPopupEvent) => {
+  selectArrText.value = ev.sku_name_arr.join(' ').trim() || ''
+
+  await postMemberCartAPI({
+    skuId: ev._id,
+    count: ev.buy_num,
+  })
+
+  uni.showToast({
+    icon: 'none',
+    title: '加入购物车成功',
+  })
+
+  isShowSku.value = false
+}
+
+// 点击sku组件的立即购买
+const onBuyNow = (ev: SkuPopupEvent) => {
   selectArrText.value = ev.sku_name_arr.join(' ').trim() || ''
 }
 
-const onBuyNow = (ev: SkuPopupEvent) => {
-  selectArrText.value = ev.sku_name_arr.join(' ').trim() || ''
+const selectAddress = ref('')
+const onCloseAddressPanel = (address: string) => {
+  selectAddress.value = address
+  popup.value?.close()
 }
 </script>
 
@@ -157,7 +180,7 @@ const onBuyNow = (ev: SkuPopupEvent) => {
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
-          <text class="text ellipsis"> 请选择收获地址 </text>
+          <text class="text ellipsis"> {{ selectAddress || '请选择收获地址' }} </text>
         </view>
         <view @tap="openPopup('service')" class="item arrow">
           <text class="label">服务</text>
@@ -234,7 +257,7 @@ const onBuyNow = (ev: SkuPopupEvent) => {
   </view>
   <!-- uni-ui 弹出层 -->
   <uni-popup ref="popup" type="bottom" background-color="#fff">
-    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" />
+    <AddressPanel v-if="popupName === 'address'" @close="onCloseAddressPanel" />
     <ServicePanel v-if="popupName === 'service'" @close="popup?.close()" />
   </uni-popup>
 </template>

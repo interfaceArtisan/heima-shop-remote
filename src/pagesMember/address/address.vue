@@ -1,16 +1,9 @@
 <script lang="ts" setup>
-import { getMemberAddressListAPI, deleteMemberAddressByIdAPI } from '@/services/address'
-import type { AddressItem } from '@/types/address'
+import { useAddressList } from '@/composables/address'
+import { deleteMemberAddressByIdAPI } from '@/services/address'
 import { onShow } from '@dcloudio/uni-app'
-import { ref } from 'vue'
 
-const addressList = ref<AddressItem[]>([])
-const getMemberAddressList = async () => {
-  const res = await getMemberAddressListAPI()
-
-  addressList.value = res.result
-}
-
+const { addressList, getMemberAddressList } = useAddressList()
 onShow(() => {
   getMemberAddressList()
 })
@@ -29,8 +22,8 @@ const onDeleteAddress = (id: string) => {
       if (res.confirm) {
         await deleteMemberAddressByIdAPI(id)
 
-        const index = addressList.value.findIndex((item) => item.id === id)
-        addressList.value.splice(index, 1)
+        // 重新拉取地址列表，为了多端数据统一
+        getMemberAddressList()
       }
     },
   })
