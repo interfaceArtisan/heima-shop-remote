@@ -51,7 +51,6 @@ const getGoodsData = async () => {
       stock: item.inventory,
     })),
   }
-  console.log(res)
 }
 
 onLoad(() => {
