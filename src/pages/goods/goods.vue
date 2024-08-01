@@ -4,7 +4,7 @@ import type { GoodsDetail } from '@/types/goods'
 import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type {
   SkuPopupEvent,
   SkuPopupInstance,
@@ -56,20 +56,14 @@ const getGoodsData = async () => {
 }
 
 const addressStore = useAddressStore()
-const selectAddressText = ref('')
-
-const getAddressText = () => {
+const selectAddressText = computed(() => {
   const address = addressStore.selectAddress
 
-  address && (selectAddressText.value = address?.fullLocation + ' ' + address?.address)
-}
-
-onShow(() => {
-  getAddressText()
+  return address?.fullLocation + ' ' + address?.address
 })
+
 onLoad(() => {
   getGoodsData()
-  getAddressText()
 })
 
 const currentIndex = ref(0)
@@ -141,12 +135,6 @@ const onBuyNow = (ev: SkuPopupEvent) => {
   uni.navigateTo({
     url: `/pagesOrder/create/create?from=goods&addressId=${address?.id}&skuId=${_id}&count=${count}`,
   })
-}
-
-const onCloseAddressPanel = () => {
-  getAddressText()
-
-  popup.value?.close()
 }
 </script>
 
@@ -278,7 +266,7 @@ const onCloseAddressPanel = () => {
   </view>
   <!-- uni-ui 弹出层 -->
   <uni-popup ref="popup" type="bottom" background-color="#fff">
-    <AddressPanel v-if="popupName === 'address'" @close="onCloseAddressPanel" />
+    <AddressPanel v-if="popupName === 'address'" @close="popup?.close()" />
     <ServicePanel v-if="popupName === 'service'" @close="popup?.close()" />
   </uni-popup>
 </template>

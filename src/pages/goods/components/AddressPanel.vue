@@ -2,57 +2,39 @@
 import { useAddressList } from '@/composables/address'
 import { useAddressStore } from '@/stores'
 import { onShow } from '@dcloudio/uni-app'
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 
 const { addressList, getMemberAddressList } = useAddressList()
 
 const addressStore = useAddressStore()
 
-const getSelectAddress = () => {
-  const selectItem = addressList.value.find((item) => item.checked)
+const selecteAddress = computed(
+  () => addressStore.selectAddress || addressList.value.find((a) => a.isDefault),
+)
 
-  return selectItem?.fullLocation + ' ' + selectItem?.address
-}
-const getAddressData = async () => {
-  await getMemberAddressList()
-  const selectAddress = addressStore.selectAddress
-
-  addressList.value = addressList.value.map((a) => ({
-    ...a,
-    checked: selectAddress ? a.id === selectAddress.id : !!a.isDefault,
-  }))
-}
 onMounted(() => {
-  getAddressData()
+  getMemberAddressList()
 })
 
 // 点击新建地址再返回后，需重新拉取数据
 onShow(() => {
-  getAddressData()
+  getMemberAddressList()
 })
 
-const onConfirm = () => {
-  emit('close', getSelectAddress())
-}
-
 const onChangeSelect = (selectIndex: number) => {
-  addressList.value.forEach((item, index) => {
-    item.checked = index === selectIndex
-  })
-
   addressStore.saveAddress(addressList.value[selectIndex])
 
-  emit('close', getSelectAddress())
+  emit('close')
 }
 const emit = defineEmits<{
-  (event: 'close', address: string): void
+  (event: 'close'): void
 }>()
 </script>
 
 <template>
   <view class="address-panel">
     <!-- 关闭按钮 -->
-    <text class="close icon-close" @tap="emit('close', getSelectAddress())"></text>
+    <text class="close icon-close" @tap="emit('close')"></text>
     <!-- 标题 -->
     <view class="title">配送至</view>
     <!-- 内容 -->
@@ -61,7 +43,7 @@ const emit = defineEmits<{
         <view class="user">{{ item.receiver }} {{ item.contact }}</view>
         <view class="address">{{ item.fullLocation }} {{ item.address }}</view>
         <text
-          :class="['icon', item.checked ? 'icon-checked' : 'icon-ring']"
+          :class="['icon', item.id === selecteAddress?.id ? 'icon-checked' : 'icon-ring']"
           @tap="onChangeSelect(index)"
         ></text>
       </view>
@@ -74,7 +56,7 @@ const emit = defineEmits<{
       >
         新建地址
       </navigator>
-      <view v-if="false" class="button primary" @tap="onConfirm">确定</view>
+      <view v-if="false" class="button primary" @tap="emit('close')">确定</view>
     </view>
   </view>
 </template>

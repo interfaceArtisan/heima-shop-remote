@@ -46,11 +46,13 @@ const getBuyNowOrderData = async () => {
   orderPre.value = res.result
 }
 
-const selecteAddress = ref<AddressItem>()
-onShow(() => {
+const selecteAddress = computed(() => {
   const addressStore = useAddressStore()
-  selecteAddress.value = addressStore.selectAddress
+  const selecteAddress = addressStore.selectAddress
+
+  return selecteAddress || orderPre.value?.userAddresses.find((a) => a.isDefault)
 })
+
 onLoad(() => {
   // 从商品详情页过来
   if (query.from === 'goods') {
