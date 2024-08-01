@@ -1,4 +1,4 @@
-import type { PrepayOrder } from '@/types/order'
+import type { OrderCreateParams, PrepayOrder } from '@/types/order'
 import { httpRequest } from '@/utils/http'
 
 /**
@@ -33,5 +33,18 @@ export const getMemberOrderPreNowAPI = (data: OrderParams) => {
   return httpRequest<PrepayOrder>({
     method: 'GET',
     url: `/member/order/pre/now?addressId=${data.addressId}&count=${data.count}&skuId=${data.skuId}`,
+  })
+}
+
+/**
+ * 提交订单
+ * @param data
+ * @returns
+ */
+export const postMemberOrderAPI = (data: OrderCreateParams) => {
+  return httpRequest<{ id: string }>({
+    method: 'POST',
+    url: `/member/order`,
+    data,
   })
 }

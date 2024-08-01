@@ -1,136 +1,164 @@
 /**
-* 返回信息
-*/
+ * 返回信息
+ */
 export interface PrepayOrder {
   /**
    * 商品集合
    */
-  goods: Good[];
+  goods: Good[]
   /**
    * 结算信息
    */
-  summary: Summary;
+  summary: Summary
   /**
    * 用户地址列表
    */
-  userAddresses: UserAddress[];
+  userAddresses: UserAddress[]
 }
 
 /**
-* 商品信息
-*/
+ * 商品信息
+ */
 export interface Good {
   /**
    * 属性文字，例如“颜色:瓷白色 尺寸：8寸”
    */
-  attrsText: string;
+  attrsText: string
   /**
    * 数量
    */
-  count: number;
+  count: number
   /**
    * id
    */
-  id: string;
+  id: string
   /**
    * 商品名称
    */
-  name: string;
+  name: string
   /**
    * 实付单价
    */
-  payPrice: number;
+  payPrice: number
   /**
    * 图片
    */
-  picture: string;
+  picture: string
   /**
    * 原单价
    */
-  price: number;
+  price: number
   /**
    * SKUID
    */
-  skuId: string;
+  skuId: string
   /**
    * 实付价格小计
    */
-  totalPayPrice: number;
+  totalPayPrice: number
   /**
    * 小计总价
    */
-  totalPrice: number;
-  [property: string]: any;
+  totalPrice: number
+  [property: string]: any
 }
 
 /**
-* 结算信息
-*/
+ * 结算信息
+ */
 export interface Summary {
   /**
    * 折扣总计
    */
-  discountPrice: number;
+  discountPrice: number
   /**
    * 商品件数
    */
-  goodsCount: number;
+  goodsCount: number
   /**
    * 邮费
    */
-  postFee: number;
+  postFee: number
   /**
    * 应付总计
    */
-  totalPayPrice: number;
+  totalPayPrice: number
   /**
    * 价格总计
    */
-  totalPrice: number;
+  totalPrice: number
 }
 
 /**
-* 地址信息
-*/
+ * 地址信息
+ */
 export interface UserAddress {
   /**
    * 详细地址
    */
-  address: string;
+  address: string
   /**
    * 城市编码
    */
-  cityCode: string;
+  cityCode: string
   /**
    * 联系方式
    */
-  contact: string;
+  contact: string
   /**
    * 所在区/县编码
    */
-  countyCode: string;
+  countyCode: string
   /**
    * 完整行政区
    */
-  fullLocation: string;
+  fullLocation: string
   /**
    * id
    */
-  id: string;
+  id: string
   /**
    * 是否为默认，1为是，0为否
    */
-  isDefault: number;
+  isDefault: number
   /**
    * 邮编
    */
-  postalCode: string;
+  postalCode: string
   /**
    * 省份编码
    */
-  provinceCode: string;
+  provinceCode: string
   /**
    * 收货人
    */
-  receiver: string;
+  receiver: string
+}
+
+// 提交订单请求参数
+export interface OrderCreateParams {
+  /**
+   * 所选地址Id
+   */
+  addressId: string
+  /**
+   * 买家留言
+   */
+  buyerMessage: string
+  /**
+   * 配送时间类型，1为不限，2为工作日，3为双休或假日
+   */
+  deliveryTimeType: number
+  /**
+   * 商品集合
+   */
+  goods: { skuId: string; count: number }[]
+  /**
+   * 支付渠道：支付渠道，1支付宝、2微信--支付方式为在线支付时，传值，为货到付款时，不传值
+   */
+  payChannel: number
+  /**
+   * 支付方式，1为在线支付，2为货到付款
+   */
+  payType: number
 }

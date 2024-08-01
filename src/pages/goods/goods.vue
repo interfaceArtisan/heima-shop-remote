@@ -59,7 +59,7 @@ const addressStore = useAddressStore()
 const selectAddressText = computed(() => {
   const address = addressStore.selectAddress
 
-  return address?.fullLocation + ' ' + address?.address
+  return address ? address?.fullLocation + ' ' + address?.address : ''
 })
 
 onLoad(() => {

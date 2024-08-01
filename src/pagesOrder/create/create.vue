@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { getMemberOrderPreNowAPI, getPrepayOrderAPI } from '@/services/order'
+import { getMemberOrderPreNowAPI, getPrepayOrderAPI, postMemberOrderAPI } from '@/services/order'
 import { useAddressStore } from '@/stores'
 import type { AddressItem } from '@/types/address'
 import type { PrepayOrder } from '@/types/order'
@@ -46,12 +46,38 @@ const getBuyNowOrderData = async () => {
   orderPre.value = res.result
 }
 
+// 收获地址
 const selecteAddress = computed(() => {
   const addressStore = useAddressStore()
   const selecteAddress = addressStore.selectAddress
 
   return selecteAddress || orderPre.value?.userAddresses.find((a) => a.isDefault)
 })
+
+const onOrderSubmit = async () => {
+  if (!selecteAddress.value?.id) {
+    return uni.showToast({
+      icon: 'none',
+      title: '请选择收货地址',
+    })
+  }
+  const res = await postMemberOrderAPI({
+    goods: orderPre.value!.goods.map((g) => ({
+      skuId: g.skuId,
+      count: g.count,
+    })),
+    addressId: selecteAddress.value!.id,
+    deliveryTimeType: deliveryList.value[activeIndex.value].type,
+    buyerMessage: buyerMessage.value, // 买家留言
+    payType: 1,
+    payChannel: 2,
+  })
+
+  // 关闭当前页面，跳转到订单详情，传递订单id
+  uni.redirectTo({
+    url: `/pagesOrder/detail/detail?id=${res.result.id}`,
+  })
+}
 
 onLoad(() => {
   // 从商品详情页过来
