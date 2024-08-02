@@ -1,3 +1,5 @@
+import type { OrderState } from '@/services/constants'
+
 /**
  * 返回信息
  */
@@ -161,4 +163,196 @@ export interface OrderCreateParams {
    * 支付方式，1为在线支付，2为货到付款
    */
   payType: number
+}
+
+// 订单详情
+export interface OrderDetail {
+  /**
+   * 预计到货时间
+   */
+  arrivalEstimatedTime: string
+  /**
+   * 交易关闭时间
+   */
+  closeTime: string
+  /**
+   * 发货时间
+   */
+  consignTime: string
+  /**
+   * 倒计时--剩余的秒数 -1 表示已经超时，正数表示倒计时未结束
+   */
+  countdown: number
+  /**
+   * 下单时间
+   */
+  createTime: string
+  /**
+   * 配送时间类型，1为不限，2为工作日，3为双休或假日
+   */
+  deliveryTimeType: number
+  /**
+   * 交易完成时间
+   */
+  endTime: string
+  /**
+   * 完成评价时间
+   */
+  evaluationTime: string
+  /**
+   * 订单编号
+   */
+  id: string
+  /**
+   * 订单状态，1为待付款、2为待发货、3为待收货、4为待评价、5为已完成、6为已取消
+   */
+  orderState: OrderState
+  /**
+   * 支付渠道，1支付宝、2微信
+   */
+  payChannel: number
+  /**
+   * 付款截止时间：剩余的秒数，前台转换成分钟：秒数
+   */
+  payLatestTime: number
+  /**
+   * 实付金额
+   */
+  payMoney: string
+  /**
+   * 付款时间
+   */
+  payTime: string
+  /**
+   * 支付方式，1为在线支付，2为货到付款
+   */
+  payType: number
+  /**
+   * 邮费
+   */
+  postFee: string
+  /**
+   * 收货人地址
+   */
+  receiverAddress: string
+  /**
+   * 收货人
+   */
+  receiverContact: string
+  /**
+   * 收货人手机
+   */
+  receiverMobile: string
+  /**
+   * 商品集合
+   */
+  skus: Skus[]
+  /**
+   * 金额合计
+   */
+  totalMoney: string
+  /**
+   * 数量合计
+   */
+  totalNum: string
+}
+
+/**
+ * 商品信息
+ */
+export interface Skus {
+  /**
+   * 属性说明
+   */
+  attrsText: string
+  /**
+   * 单价
+   */
+  curPrice: number
+  /**
+   * sku id
+   */
+  id: string
+  /**
+   * 图片地址
+   */
+  image: string
+  /**
+   * 商品名称
+   */
+  name: string
+  /**
+   * 属性集合
+   */
+  properties: { propertyMainName: string; propertyValueName: string }[]
+  /**
+   * 数量
+   */
+  quantity: string
+  /**
+   * 实付金额
+   */
+  realPay: number
+  /**
+   * spu id
+   */
+  spuId: string
+  /**
+   * 小计
+   */
+  totalMoney: number
+}
+// 订单详情结束
+
+// 物流信息
+export interface Logistics {
+  /**
+   * 快递公司
+   */
+  company: Company
+  /**
+   * 商品件数
+   */
+  count: number
+  /**
+   * 物流日志
+   */
+  list: List[]
+  /**
+   * 商品图片
+   */
+  picture: string
+}
+
+/**
+ * 快递公司
+ */
+export interface Company {
+  /**
+   * 公司名称
+   */
+  name: string
+  /**
+   * 快递编号
+   */
+  number: string
+  /**
+   * 联系电话
+   */
+  tel: string
+}
+
+export interface List {
+  /**
+   * 信息ID
+   */
+  id: string
+  /**
+   * 信息文字
+   */
+  text: string
+  /**
+   * 时间
+   */
+  time: string
 }
