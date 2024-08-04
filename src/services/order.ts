@@ -1,4 +1,10 @@
-import type { Logistics, OrderCreateParams, OrderDetail, PrepayOrder } from '@/types/order'
+import type {
+  Logistics,
+  OrderCreateParams,
+  OrderDetail,
+  OrderList,
+  PrepayOrder,
+} from '@/types/order'
 import { httpRequest } from '@/utils/http'
 
 /**
@@ -112,5 +118,30 @@ export const putMemberOrderCancelByIdAPI = (id: string, cancelReason: string) =>
     data: {
       cancelReason,
     },
+  })
+}
+
+/**
+ * 获取订单列表 /member/order
+ */
+type orderListParams = {
+  /**
+   * 订单状态，1为待付款、2为待发货、3为待收货、4为待评价、5为已完成、6为已取消，未传该参数或0为全部
+   */
+  orderState?: number
+  /**
+   * 页码
+   */
+  page?: number
+  /**
+   * 页容量
+   */
+  pageSize?: number
+}
+export const getMemberOrderAPI = (data?: orderListParams) => {
+  return httpRequest<OrderList>({
+    method: 'GET',
+    url: `/member/order`,
+    data,
   })
 }

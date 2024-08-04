@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { useGuessLike } from '@/composables/gussLike'
 import { useMemberStore } from '@/stores'
+import { OrderListTabMap } from '@/services/constants'
 
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const memberStore = useMemberStore()
 
 const { xtxGuessLike, onScrollLower } = useGuessLike()
+
+const orderTypes = [
+  { type: 0, text: '待付款', icon: 'icon-order' },
+  { type: 1, text: '待发货', icon: 'icon-delivery' },
+  { type: 2, text: '待收货', icon: 'icon-receipt' },
+  { type: 3, text: '待评价', icon: 'icon-comment' },
+]
 </script>
 
 <template>
@@ -51,24 +59,28 @@ const { xtxGuessLike, onScrollLower } = useGuessLike()
     </view>
     <!-- 我的订单 -->
     <view class="orders">
-      <!-- <view class="title">
+      <view class="title">
         我的订单
-        <navigator class="navigator" url="/pagesOrder/list/list?type=0" hover-class="none">
+        <navigator
+          class="navigator"
+          url="/pagesOrder/order-list/order-list?type=0"
+          hover-class="none"
+        >
           查看全部订单<text class="icon-right"></text>
         </navigator>
-      </view> -->
+      </view>
       <view class="section">
         <!-- 订单 -->
-        <!-- <navigator
-          v-for="item in orderTypes"
-          :key="item.type"
+        <navigator
+          v-for="item in OrderListTabMap"
+          :key="item.orderState"
           :class="item.icon"
-          :url="`/pagesOrder/list/list?type=${item.type}`"
+          :url="`/pagesOrder/order-list/order-list?type=${item.orderState}`"
           class="navigator"
           hover-class="none"
         >
-          {{ item.text }}
-        </navigator> -->
+          {{ item.title }}
+        </navigator>
         <!-- 客服 -->
         <!-- #ifdef MP-WEIXIN -->
         <button class="contact icon-handset" open-type="contact">售后</button>

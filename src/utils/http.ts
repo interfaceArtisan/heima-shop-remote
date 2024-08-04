@@ -13,7 +13,7 @@ const httpInterceptor = {
     }
 
     // 请求超时, 默认60s
-    options.timeout = 10000
+    options.timeout = 1000000
 
     const memberStore = useMemberStore()
     const token = memberStore.profile?.token
@@ -37,7 +37,6 @@ export const httpRequest = <T>(options: UniApp.RequestOptions) => {
       // success的含义是请求已经到达服务器，服务器有响应的情况
       success(res) {
         if (res.statusCode >= 200 && res.statusCode < 300) {
-
           resolve(res.data as Data<T>)
         }
         // 401错误，清理用户信息，跳转到登录页

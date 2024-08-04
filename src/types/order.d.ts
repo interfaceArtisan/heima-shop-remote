@@ -257,10 +257,7 @@ export interface OrderDetail {
   totalNum: string
 }
 
-/**
- * 商品信息
- */
-export interface Skus {
+interface BaseSkus {
   /**
    * 属性说明
    */
@@ -297,6 +294,11 @@ export interface Skus {
    * spu id
    */
   spuId: string
+}
+/**
+ * 商品信息
+ */
+export interface Skus extends BaseSkus {
   /**
    * 小计
    */
@@ -356,3 +358,78 @@ export interface List {
    */
   time: string
 }
+
+// 订单列表
+export interface OrderList {
+  /**
+   * 总记录数
+   */
+  counts: number
+  /**
+   * 数据集合
+   */
+  items: Item[]
+  /**
+   * 当前页码
+   */
+  page: string
+  /**
+   * 总页数
+   */
+  pages: string
+  /**
+   * 页尺寸
+   */
+  pageSize: string
+}
+
+/**
+ * 订单信息
+ */
+export interface Item {
+  /**
+   * 倒计时--剩余的秒数 -1 表示已经超时，正数表示倒计时未结束
+   */
+  countdown: number
+  /**
+   * 下单时间
+   */
+  createTime: string
+  /**
+   * 订单编号
+   */
+  id: string
+  /**
+   * 订单状态，1为待付款、2为待发货、3为待收货、4为待评价、5为已完成、6为已取消
+   */
+  orderState: number
+  /**
+   * 付款截止时间
+   */
+  payLatestTime: string
+  /**
+   * 实付金额
+   */
+  payMoney: number
+  /**
+   * 支付方式，1为在线支付，2为货到付款
+   */
+  payType: number
+  /**
+   * 邮费
+   */
+  postFee: number
+  /**
+   * 商品集合
+   */
+  skus: BaseSkus[]
+  /**
+   * 金额合计
+   */
+  totalMoney: number
+  /**
+   * 数量合计
+   */
+  totalNum: string
+}
+// 订单列表结束

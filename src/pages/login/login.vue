@@ -5,6 +5,7 @@ import { reactive, ref } from 'vue'
 import { useMemberStore } from '@/stores'
 import type { LoginResult } from '@/types/member'
 
+// #ifdef MP-WEIXIN
 let code = ''
 onLoad(async () => {
   const res = await wx.login()
@@ -24,13 +25,6 @@ const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (event) => {
   loginSuccess(res.result)
 }
 
-// h5端表单登录
-const form = reactive({
-  account: '',
-  password: '',
-})
-const onSubmit = () => {}
-
 // 小程序端授权登录
 const isAgreePrivacy = ref(false)
 const checkedAgreePrivacy = () => {
@@ -49,6 +43,16 @@ const onGetphonenumberSimple: UniHelper.ButtonOnGetphonenumber = async (event) =
 
   loginSuccess(res.result)
 }
+// #endif
+
+// #ifdef H5
+// h5端表单登录
+const form = reactive({
+  account: '',
+  password: '',
+})
+const onSubmit = () => {}
+// #endif
 
 const loginSuccess = (memberInfo: LoginResult) => {
   // 保存用户信息
@@ -102,6 +106,7 @@ const isAgreePrivacyShakeY = ref(false)
         </button>
       </view>
       <!-- #endif -->
+
       <view class="extra">
         <view class="caption">
           <text>其他登录方式</text>
