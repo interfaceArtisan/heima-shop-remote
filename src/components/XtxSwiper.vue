@@ -35,35 +35,5 @@ defineProps<{
 </template>
 
 <style lang="scss">
-:host {
-  display: block;
-  height: 280rpx;
-}
-.carousel {
-  position: relative;
-  height: 100%;
-  .navigator {
-    height: 100%;
-  }
-  .indicator {
-    position: absolute;
-    bottom: 8px;
-    height: 2px;
-    margin-left: 50%;
-    transform: translateX(-50%);
-    font-size: 0;
-    .dot {
-      display: inline-block;
-      height: 100%;
-      width: 10px;
-      margin: 0 1px;
-      border-radius: 3px;
-      background-color: #fff;
-      &.active {
-        background-color: aquamarine;
-      }
-    }
-  }
-}
-// @import './styles/XtxSwiper.scss';
+@import './styles/xtxSwiper.scss';
 </style>

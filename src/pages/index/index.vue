@@ -79,7 +79,7 @@ const onRefreshrefresh = async () => {
     @scrolltolower="onScrollLower"
     @refresherrefresh="onRefreshrefresh"
   >
-    <HomeSkeleton v-if="isSkeltonShow"></HomeSkeleton>
+    <HomeSkeleton v-if="true"></HomeSkeleton>
     <template v-else>
       <!-- 轮播图 -->
       <XtxSwiper :list="bannerList"></XtxSwiper>

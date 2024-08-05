@@ -26,37 +26,5 @@ defineProps<{
 </template>
 
 <style lang="scss">
-.hot {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 20rpx 38rpx;
-  background-color: #fff;
-  .item {
-    width: 50%;
-    &:nth-child(even) {
-      padding-left: 20rpx;
-    }
-    .title {
-      .title-text {
-        font-weight: 600;
-      }
-      .title-desc {
-        font-size: 14px;
-        margin-left: 10rpx;
-      }
-    }
-    navigator {
-      width: 100%;
-      display: flex;
-
-      .image {
-        width: 100%;
-        height: 200rpx;
-        &:nth-child(even) {
-          margin-left: 10rpx;
-        }
-      }
-    }
-  }
-}
+@import '../styles/HotPanel.scss';
 </style>

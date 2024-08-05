@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { loginAPI, loginSimpleAPI } from '@/services/login'
+import { loginAPI, loginByCodeAPI, loginSimpleAPI } from '@/services/login'
 import { onLoad } from '@dcloudio/uni-app'
 import { reactive, ref } from 'vue'
 import { useMemberStore } from '@/stores'
 import type { LoginResult } from '@/types/member'
+
+// 是否同意隐私协议
+const isAgreePrivacy = ref(false)
 
 // #ifdef MP-WEIXIN
 let code = ''
@@ -26,12 +29,12 @@ const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (event) => {
 }
 
 // 小程序端授权登录
-const isAgreePrivacy = ref(false)
 const checkedAgreePrivacy = () => {
   isAgreePrivacy.value = !isAgreePrivacy.value
 }
+// #endif
 
-// 小程序模拟登录，个人认证微信小程序无法获取手机号, 只能模拟登录
+// 小程序模拟登录，个人认证微信小程序无法获取手机号, 只能模拟登录（通用模拟登录）
 const onGetphonenumberSimple: UniHelper.ButtonOnGetphonenumber = async (event) => {
   if (!isAgreePrivacy.value) {
     return uni.showToast({
@@ -43,7 +46,6 @@ const onGetphonenumberSimple: UniHelper.ButtonOnGetphonenumber = async (event) =
 
   loginSuccess(res.result)
 }
-// #endif
 
 // #ifdef H5
 // h5端表单登录
@@ -51,7 +53,11 @@ const form = reactive({
   account: '',
   password: '',
 })
-const onSubmit = () => {}
+const onSubmit = async () => {
+  const res = await loginByCodeAPI(form)
+
+  loginSuccess(res.result)
+}
 // #endif
 
 const loginSuccess = (memberInfo: LoginResult) => {

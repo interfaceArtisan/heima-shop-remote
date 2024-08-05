@@ -61,6 +61,7 @@ const rules: UniHelper.UniFormsRules = {
   },
 }
 
+// #ifdef MAP-WEIXIN
 const onRegionChange: UniHelper.RegionPickerOnChange = (ev) => {
   // 省市区，前端展现
   form.value.fullLocation = ev.detail.value.join(' ')
@@ -75,8 +76,20 @@ const onRegionChange: UniHelper.RegionPickerOnChange = (ev) => {
     countyCode,
   }
 }
+// #endif
 
-const onCityChange = () => {}
+// #ifdef H5 | APP-PLUS
+const onCityChange: UniHelper.UniDataPickerOnChange = (ev) => {
+  const [provinceCode, cityCode, countyCode] = ev.detail.value.map((item) => item.value)
+
+  form.value = {
+    ...form.value,
+    provinceCode,
+    cityCode,
+    countyCode,
+  }
+}
+// #endif
 
 const formRef = ref<UniHelper.UniFormsInstance>()
 
