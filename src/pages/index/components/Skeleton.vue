@@ -158,6 +158,10 @@
 </template>
 
 <style lang="scss">
+@import '../styles/categoryPanel.scss';
+@import '../styles/hotPanel.scss';
+@import '@/components/styles/xtxSwiper.scss';
+@import '@/components/styles/xtxGuess.scss';
 .sk-transparent {
   color: transparent !important;
 }
