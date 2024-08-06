@@ -67,6 +67,12 @@ const emit = defineEmits<{
   border-radius: 10rpx 10rpx 0 0;
   position: relative;
   background-color: #fff;
+
+  /* #ifdef H5 | APP-PLUS */
+  .navigator-wrap:link {
+    flex: 1;
+  }
+  /* #endif */
 }
 
 .title {

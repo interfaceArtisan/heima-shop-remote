@@ -27,12 +27,11 @@ const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (event) => {
 
   loginSuccess(res.result)
 }
-
+// #endif
 // 小程序端授权登录
 const checkedAgreePrivacy = () => {
   isAgreePrivacy.value = !isAgreePrivacy.value
 }
-// #endif
 
 // 小程序模拟登录，个人认证微信小程序无法获取手机号, 只能模拟登录（通用模拟登录）
 const onGetphonenumberSimple: UniHelper.ButtonOnGetphonenumber = async (event) => {
@@ -125,7 +124,7 @@ const isAgreePrivacyShakeY = ref(false)
         </view>
       </view>
       <view class="tips" :class="{ animate__shakeY: isAgreePrivacyShakeY }">
-        <label class="label" @tap="isAgreePrivacy = !isAgreePrivacy">
+        <label class="label" @tap="checkedAgreePrivacy">
           <radio class="radio" color="#28bb9c" :checked="isAgreePrivacy" />
           <text>登录/注册即视为你同意小兔鲜儿</text>
         </label>
