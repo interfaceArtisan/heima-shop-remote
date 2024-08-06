@@ -67,14 +67,7 @@ const emit = defineEmits<{
   border-radius: 10rpx 10rpx 0 0;
   position: relative;
   background-color: #fff;
-
-  /* #ifdef H5 | APP-PLUS */
-  .navigator-wrap:link {
-    flex: 1;
-  }
-  /* #endif */
 }
-
 .title {
   line-height: 1;
   padding: 40rpx 0;
@@ -142,6 +135,7 @@ const emit = defineEmits<{
   font-size: 28rpx;
   color: #444;
 
+  /* #endif */
   .button {
     flex: 1;
     height: 72rpx;
