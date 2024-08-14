@@ -135,7 +135,6 @@ const emit = defineEmits<{
   font-size: 28rpx;
   color: #444;
 
-  /* #endif */
   .button {
     flex: 1;
     height: 72rpx;
